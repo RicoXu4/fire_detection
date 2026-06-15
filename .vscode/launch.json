@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Fire Detection WebUI",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "app.api:app",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "8000",
+        "--reload"
+      ],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}",
+        "FIRE_MODEL_PATH": "runs/detect/runs/train/yolo26n_mixed_indoor_fire_mps_35e/weights/best.pt",
+        "FIRE_DEVICE": "cpu",
+        "FIRE_IMAGE_SIZE": "512"
+      },
+      "console": "integratedTerminal"
+    }
+  ]
+}

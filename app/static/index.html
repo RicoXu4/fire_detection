@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fire Detection</title>
+    <link rel="stylesheet" href="/static/styles.css?v=3" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="toolbar">
+        <div>
+          <h1>Fire Detection</h1>
+          <p>上传图片后输出火焰和烟雾检测框</p>
+        </div>
+        <div class="thresholds">
+          <label class="threshold mode">
+            <span>显示</span>
+            <select id="labelMode">
+              <option value="risk" selected>火情风险</option>
+              <option value="raw">原始类别</option>
+            </select>
+          </label>
+          <label class="threshold">
+            <span>火焰</span>
+            <input id="fireConfidence" type="range" min="0.05" max="0.8" value="0.12" step="0.01" />
+            <strong id="fireConfidenceValue">0.12</strong>
+          </label>
+          <label class="threshold">
+            <span>烟雾</span>
+            <input id="smokeConfidence" type="range" min="0.05" max="0.8" value="0.30" step="0.01" />
+            <strong id="smokeConfidenceValue">0.30</strong>
+          </label>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="pane">
+          <div class="paneHead">
+            <h2>输入</h2>
+            <label class="fileButton">
+              <input id="fileInput" type="file" accept="image/*" />
+              选择图片
+            </label>
+          </div>
+          <button id="dropZone" class="dropZone" type="button">
+            <span>拖入图片或点击选择</span>
+          </button>
+          <figure class="imageFrame">
+            <img id="sourceImage" alt="" />
+          </figure>
+        </div>
+
+        <div class="pane">
+          <div class="paneHead">
+            <h2>输出</h2>
+            <button id="runButton" class="primary" type="button" disabled>检测</button>
+          </div>
+          <figure class="imageFrame result">
+            <img id="resultImage" alt="" />
+            <figcaption id="emptyResult">等待图片</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="results">
+        <div class="summary">
+          <div>
+            <span>检测数</span>
+            <strong id="count">0</strong>
+          </div>
+          <div>
+            <span>图片尺寸</span>
+            <strong id="dimensions">-</strong>
+          </div>
+          <div>
+            <span>状态</span>
+            <strong id="status">就绪</strong>
+          </div>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>类别</th>
+                <th>置信度</th>
+                <th>框坐标</th>
+              </tr>
+            </thead>
+            <tbody id="detectionsBody">
+              <tr>
+                <td colspan="3" class="muted">暂无检测结果</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js?v=3"></script>
+  </body>
+</html>
