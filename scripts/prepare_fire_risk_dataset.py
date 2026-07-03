@@ -103,7 +103,7 @@ def build_split(source: Path, output: Path, split: str, copy_images: bool) -> tu
 
 def write_data_yaml(output: Path) -> None:
     (output / "data.yaml").write_text(
-        f"""path: {output.resolve()}
+        f"""path: {output.as_posix()}
 train: train/images
 val: valid/images
 test: test/images

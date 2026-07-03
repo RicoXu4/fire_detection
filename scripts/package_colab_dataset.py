@@ -35,6 +35,17 @@ def main() -> None:
         staged_dataset = tmp_root / "datasets" / dataset.name
         staged_dataset.parent.mkdir(parents=True, exist_ok=True)
         shutil.copytree(dataset, staged_dataset, symlinks=False)
+        (staged_dataset / "data.yaml").write_text(
+            f"""path: /content/fire_detection/datasets/{dataset.name}
+train: train/images
+val: valid/images
+test: test/images
+
+names:
+  0: fire_risk
+""",
+            encoding="utf-8",
+        )
 
         if output.exists():
             output.unlink()
