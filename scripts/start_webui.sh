@@ -6,7 +6,7 @@ cd /Users/rico/code/fire_detection
 export PYTHONPATH=.
 export MPLCONFIGDIR=/Users/rico/code/fire_detection/.cache/matplotlib
 export YOLO_CONFIG_DIR=/Users/rico/code/fire_detection/.cache/ultralytics
-export FIRE_MODEL_PATH="${FIRE_MODEL_PATH:-runs/detect/runs/train/yolo26n_mixed_indoor_fire_mps_35e/weights/best.pt}"
+export FIRE_MODEL_PATH="${FIRE_MODEL_PATH:-weights/yolov26_fire.pt}"
 export FIRE_DEVICE="${FIRE_DEVICE:-cpu}"
 export FIRE_IMAGE_SIZE="${FIRE_IMAGE_SIZE:-512}"
 export FIRE_FIRE_CONF_THRESHOLD="${FIRE_FIRE_CONF_THRESHOLD:-0.12}"

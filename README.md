@@ -122,6 +122,24 @@ python scripts/train.py \
 - 保留独立验证集，按场景划分而不是随机混合
 - 部署前按业务阈值评估漏检率和误报率
 
+## Google Colab 训练
+
+Colab 入口 notebook：
+
+```text
+notebooks/fire_risk_colab_training.ipynb
+```
+
+如果要把本地单类 `fire_risk` 数据集带到 Colab，先生成一个不含断链的 zip：
+
+```bash
+python scripts/package_colab_dataset.py \
+  --dataset datasets/mixed_indoor_fire_risk_plus_new \
+  --output fire_detection_datasets.zip
+```
+
+把 `fire_detection_datasets.zip` 上传到 Google Drive 的 `MyDrive`，在 Colab 中打开 notebook 后按顺序运行。默认训练配置为单类 `fire_risk`、`imgsz=768`、`60` epochs，并把训练结果复制回 Google Drive。
+
 ## Docker 部署
 
 ```bash

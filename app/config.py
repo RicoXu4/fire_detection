@@ -6,7 +6,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     model_path: str = Field(
-        "runs/detect/runs/train/yolo26n_mixed_indoor_fire_mps_35e/weights/best.pt",
+        "weights/yolov26_fire.pt",
         alias="FIRE_MODEL_PATH",
     )
     conf_threshold: float = Field(0.20, alias="FIRE_CONF_THRESHOLD")
@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     iou_threshold: float = Field(0.45, alias="FIRE_IOU_THRESHOLD")
     image_size: int = Field(512, alias="FIRE_IMAGE_SIZE")
     device: str = Field("cpu", alias="FIRE_DEVICE")
-    classes: str = Field("fire,flame,smoke", alias="FIRE_CLASSES")
+    classes: str = Field("fire_risk,fire,flame,smoke", alias="FIRE_CLASSES")
 
     model_config = SettingsConfigDict(populate_by_name=True)
 
