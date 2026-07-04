@@ -5,6 +5,7 @@ import csv
 import shutil
 from pathlib import Path
 
+import torch
 import yaml
 from PIL import Image, ImageDraw
 from ultralytics import YOLO
@@ -23,6 +24,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--imgsz", type=int, default=768)
     parser.add_argument("--device", default="0")
     parser.add_argument("--batch", type=int, default=16)
+    parser.add_argument("--half", action="store_true", help="Use FP16 inference on CUDA to reduce memory use.")
+    parser.add_argument("--limit", type=int, default=0, help="Optional max number of images to evaluate.")
     parser.add_argument("--output", default="runs/threshold_analysis/fire_risk")
     parser.add_argument("--export-threshold", type=float, default=0.10)
     parser.add_argument("--max-export", type=int, default=80)
@@ -129,6 +132,8 @@ def main() -> None:
 
     images_dir, labels_dir = load_dataset(Path(args.data), args.split)
     image_paths = sorted(path for path in images_dir.iterdir() if path.suffix.lower() in IMAGE_SUFFIXES)
+    if args.limit > 0:
+        image_paths = image_paths[: args.limit]
     if not image_paths:
         raise SystemExit(f"No images found in {images_dir}")
 
@@ -150,17 +155,16 @@ def main() -> None:
     missed_exports = 0
     false_alarm_exports = 0
 
-    results = model.predict(
-        source=[str(path) for path in image_paths],
-        conf=min_threshold,
-        imgsz=args.imgsz,
-        device=args.device,
-        batch=args.batch,
-        stream=True,
-        verbose=False,
-    )
-
-    for image_path, result in zip(image_paths, results):
+    for index, image_path in enumerate(image_paths, start=1):
+        result = model.predict(
+            source=str(image_path),
+            conf=min_threshold,
+            imgsz=args.imgsz,
+            device=args.device,
+            batch=1,
+            half=args.half,
+            verbose=False,
+        )[0]
         with Image.open(image_path) as image:
             targets = read_gt_boxes(labels_dir / f"{image_path.stem}.txt", image.size)
 
@@ -196,6 +200,10 @@ def main() -> None:
                 if not targets and predictions and false_alarm_exports < args.max_export:
                     draw_review_image(image_path, output / "false_alarms" / image_path.name, targets, predictions)
                     false_alarm_exports += 1
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        if index % 100 == 0:
+            print(f"processed {index}/{len(image_paths)} images")
 
     csv_path = output / "threshold_summary.csv"
     with csv_path.open("w", newline="", encoding="utf-8") as file:
